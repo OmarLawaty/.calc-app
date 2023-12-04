@@ -1,5 +1,26 @@
-function App() {
-  return <div>App</div>;
-}
+import { useEffect, useState } from 'react';
+import { Header, Display, Body } from './components';
+
+const App = () => {
+  const [activeTheme, setActiveTheme] = useState(1);
+
+  useEffect(() => {
+    const saved_theme = localStorage.getItem('theme');
+
+    if (saved_theme) setActiveTheme(saved_theme);
+  }, []);
+
+  return (
+    <>
+      <Header setActiveTheme={setActiveTheme} activeTheme={activeTheme} />
+
+      <main>
+        <Display />
+
+        <Body />
+      </main>
+    </>
+  );
+};
 
 export default App;
