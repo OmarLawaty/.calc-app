@@ -3,6 +3,7 @@ import { Header, Display, Body } from './components';
 
 const App = () => {
   const [activeTheme, setActiveTheme] = useState(1);
+  const [currentDisplayValue, setCurrentDisplayValue] = useState('0');
 
   useEffect(() => {
     const saved_theme = localStorage.getItem('theme');
@@ -15,9 +16,9 @@ const App = () => {
       <Header setActiveTheme={setActiveTheme} activeTheme={activeTheme} />
 
       <main>
-        <Display />
+        <Display currentDisplayValue={currentDisplayValue} />
 
-        <Body />
+        <Body currentDisplayValue={currentDisplayValue} setCurrentDisplayValue={setCurrentDisplayValue} />
       </main>
     </>
   );
