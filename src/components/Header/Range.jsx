@@ -11,7 +11,7 @@ export const Range = ({ activeTheme, handleChange }) => {
       transition="background 0.5s"
       bg="hsl(223, 31%, 20%)"
       rounded="full"
-      p="0 10px"
+      p="0 12px"
     >
       <RangeSlider
         defaultValue={[localStorage.getItem('theme')]}
