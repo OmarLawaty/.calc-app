@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+
 import { Header, Display, Body } from './components';
 
 const App = () => {
@@ -12,15 +14,24 @@ const App = () => {
   }, []);
 
   return (
-    <>
-      <Header setActiveTheme={setActiveTheme} activeTheme={activeTheme} />
+    <Flex
+      justify="center"
+      minW="100vw"
+      minH="100vh"
+      bg="hsl(222, 26%, 31%)"
+      transition="background 0.5s"
+      p="min(102px, 9vw) 23px"
+    >
+      <Flex flexDir="column" gap="30px" w="clamp(440px, 43.8%, 850px)">
+        <Header setActiveTheme={setActiveTheme} activeTheme={activeTheme} />
 
-      <main>
-        <Display currentDisplayValue={currentDisplayValue} />
+        <Box as="main">
+          <Display currentDisplayValue={currentDisplayValue} />
 
-        <Body currentDisplayValue={currentDisplayValue} setCurrentDisplayValue={setCurrentDisplayValue} />
-      </main>
-    </>
+          <Body currentDisplayValue={currentDisplayValue} setCurrentDisplayValue={setCurrentDisplayValue} />
+        </Box>
+      </Flex>
+    </Flex>
   );
 };
 

@@ -1,33 +1,30 @@
-export const ThemeController = ({ activeTheme, setActiveTheme }) => {
-  const handleChange = e => {
-    const newValue = e.target.value;
+import { Flex, Box, Text } from '@chakra-ui/react';
 
-    setActiveTheme(newValue);
-    localStorage.setItem('theme', newValue);
+import { Range } from './Range';
+
+export const ThemeController = ({ activeTheme, setActiveTheme }) => {
+  const handleChange = value => {
+    setActiveTheme(value);
+    localStorage.setItem('theme', value);
   };
 
   return (
-    <div>
-      <div>
-        <span>1</span>
-        <span>2</span>
-        <span>3</span>
-      </div>
+    <Flex flexDir="column" gap="5px">
+      <Box fontSize="13px" textAlign="end">
+        {[1, 2, 3].map(item => (
+          <Text letterSpacing="12px" display="inline" key={item}>
+            {item}
+          </Text>
+        ))}
+      </Box>
 
-      <div>
-        <label htmlFor="theme">theme</label>
+      <Flex align="center" gap="20px">
+        <Box fontSize="12px" letterSpacing="1px" as="label" htmlFor="theme" textTransform="uppercase">
+          theme
+        </Box>
 
-        <input
-          type="range"
-          name="active-theme"
-          id="theme"
-          step="1"
-          min="1"
-          max="3"
-          value={activeTheme}
-          onChange={handleChange}
-        />
-      </div>
-    </div>
+        <Range activeTheme={activeTheme} handleChange={handleChange} />
+      </Flex>
+    </Flex>
   );
 };
