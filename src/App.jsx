@@ -25,11 +25,11 @@ const App = () => {
       <Flex flexDir="column" gap="30px" w="clamp(440px, 43.8%, 850px)">
         <Header setActiveTheme={setActiveTheme} activeTheme={activeTheme} />
 
-        <Box as="main">
+        <Flex as="main" flexDir="column" gap="27px">
           <Display currentDisplayValue={currentDisplayValue} />
 
           <Body currentDisplayValue={currentDisplayValue} setCurrentDisplayValue={setCurrentDisplayValue} />
-        </Box>
+        </Flex>
       </Flex>
     </Flex>
   );

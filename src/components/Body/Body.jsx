@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
+import { Box, Button, GridItem, Grid } from '@chakra-ui/react';
+
 import { calculate } from '../../assets/helperFunctions';
+import { Key } from './Key';
 
 const KEY_STROKES = {
   operators: ['+', '-', '*', '/'],
-  numbers: Array.from({ length: 10 }, (_, i) => i.toString()),
+  numbers: Array.from({ length: 10 }, (_, i) => i.toString()).reverse(),
   period: '.',
   equal: '=',
   del: 'del',
@@ -78,34 +81,81 @@ export const Body = ({ currentDisplayValue, setCurrentDisplayValue }) => {
   };
 
   return (
-    <div id="keyboard" onClick={handleChange}>
+    <Grid
+      id="keyboard"
+      p="30px"
+      gridTemplate={`"num-7 num-8 num-9 del" 
+                     "num-4 num-5 num-6 plus" 
+                     "num-1 num-2 num-3 minus" 
+                     "period num-0 division multiply"
+                     "reset reset equal equal"`}
+      gridTemplateColumns="repeat(4, 1fr)"
+      gridTemplateRows="repeat(5, 1fr)"
+      gap={['10px', null, '25px']}
+      rounded="0.625rem"
+      bg="hsl(223, 31%, 20%);"
+      onClick={handleChange}
+    >
       {KEY_STROKES.numbers.map(item => (
-        <button className="key" datatype="number" datavalue={item} key={item}>
+        <GridItem as={Key} area={`num-${item}`} key={item} datatype="number" datavalue={item}>
           {item}
-        </button>
+        </GridItem>
       ))}
 
-      {KEY_STROKES.operators.map(item => (
-        <button className="key" datatype="operator" datavalue={item} key={item}>
+      {KEY_STROKES.operators.map((item, index) => (
+        <GridItem
+          as={Key}
+          area={['plus', 'minus', 'multiply', 'division'][index]}
+          key={item}
+          datatype="operator"
+          datavalue={item}
+        >
           {item}
-        </button>
+        </GridItem>
       ))}
 
-      <button className="key" datatype="period" datavalue={KEY_STROKES.period}>
+      <GridItem as={Key} area="period" datatype="period" datavalue={KEY_STROKES.period}>
         {KEY_STROKES.period}
-      </button>
+      </GridItem>
 
-      <button className="key" datatype="del" datavalue={KEY_STROKES.del}>
+      <GridItem
+        as={Key}
+        area="del"
+        bg="hsl(225, 21%, 49%)"
+        borderColor="hsl(224, 28%, 35%)"
+        fontSize={['xs', null, 'xl']}
+        color="white"
+        datatype="del"
+        datavalue={KEY_STROKES.del}
+      >
         {KEY_STROKES.del}
-      </button>
+      </GridItem>
 
-      <button className="key" datatype="reset" datavalue={KEY_STROKES.reset}>
+      <GridItem
+        as={Key}
+        area="reset"
+        bg="hsl(225, 21%, 49%)"
+        borderColor="hsl(224, 28%, 35%)"
+        fontSize={['xs', null, 'xl']}
+        color="white"
+        datatype="reset"
+        datavalue={KEY_STROKES.reset}
+      >
         {KEY_STROKES.reset}
-      </button>
+      </GridItem>
 
-      <button className="key" datatype="equal" datavalue={KEY_STROKES.equal}>
+      <GridItem
+        as={Key}
+        area="equal"
+        bg="hsl(6, 63%, 50%)"
+        borderColor="hsl(6, 70%, 34%)"
+        fontSize={['xs', null, 'xl']}
+        color="white"
+        datatype="equal"
+        datavalue={KEY_STROKES.equal}
+      >
         {KEY_STROKES.equal}
-      </button>
-    </div>
+      </GridItem>
+    </Grid>
   );
 };
