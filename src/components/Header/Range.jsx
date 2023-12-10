@@ -1,7 +1,14 @@
 import { Flex } from '@chakra-ui/react';
 import { RangeSlider, RangeSliderTrack, RangeSliderThumb } from '@chakra-ui/slider';
 
+import theme from '../../assets/theme.json';
+
 export const Range = ({ activeTheme, handleChange }) => {
+  const {
+    background,
+    rangeThumb: { background: thumbBg }
+  } = theme[activeTheme].header.range;
+
   return (
     <Flex
       align="center"
@@ -9,7 +16,7 @@ export const Range = ({ activeTheme, handleChange }) => {
       w="68px"
       h="22px"
       transition="background 0.5s"
-      bg="hsl(223, 31%, 20%)"
+      bg={background}
       rounded="full"
       p="0 12px"
     >
@@ -30,7 +37,8 @@ export const Range = ({ activeTheme, handleChange }) => {
           w="15px"
           h="15px"
           rounded="full"
-          bg="hsl(6, 63%, 50%)"
+          bg={thumbBg}
+          transition="background 0.5s"
           _focusVisible={{
             outline: 'none'
           }}

@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 
 import { Header, Display, Body } from './components';
+import theme from './assets/theme.json';
 
 const App = () => {
   const [activeTheme, setActiveTheme] = useState(1);
   const [currentDisplayValue, setCurrentDisplayValue] = useState('0');
+
+  const { background } = theme[activeTheme].body;
 
   useEffect(() => {
     const saved_theme = localStorage.getItem('theme');
@@ -18,7 +21,7 @@ const App = () => {
       justify="center"
       minW="100vw"
       minH="100vh"
-      bg="hsl(222, 26%, 31%)"
+      bg={background}
       transition="background 0.5s"
       p="min(102px, 9vw) 23px"
     >
