@@ -1,6 +1,11 @@
 export const calculate = (equation, operator) => {
-  let [firstNumber, secondNumber] = equation.split(operator);
+  let [firstNumber, secondNumber] = equation.split(operator).filter(item => item !== '');
+
+  if (equation[0] === operator) firstNumber = operator + firstNumber;
+
   (firstNumber = Number(firstNumber)), (secondNumber = Number(secondNumber));
+
+  console.log(firstNumber, operator, secondNumber);
 
   let result = 0;
 
