@@ -17,14 +17,7 @@ const App = () => {
   }, []);
 
   return (
-    <Flex
-      justify="center"
-      minW="100vw"
-      minH="100vh"
-      bg={background}
-      transition="background 0.5s"
-      p="min(102px, 9vw) 23px"
-    >
+    <Flex justify="center" minH="100vh" bg={background} transition="background 0.5s" p="min(102px, 9vw) 23px">
       <Flex flexDir="column" gap="30px" w="clamp(440px, 43.8%, 850px)">
         <Header setActiveTheme={setActiveTheme} activeTheme={activeTheme} />
 

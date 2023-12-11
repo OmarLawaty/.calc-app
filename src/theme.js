@@ -9,7 +9,6 @@ const globalStyles = {
     body: {
       scrollbarGutter: 'stable',
       minH: '100vh',
-      minW: '100vw',
       fontSize: '32px',
       fontWeight: '700'
     }

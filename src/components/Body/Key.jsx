@@ -2,7 +2,7 @@ import { Button } from '@chakra-ui/react';
 
 import theme from '../../assets/theme.json';
 
-export const Key = ({ children, ...props }) => {
+export const Key = props => {
   const { color, background, borderColor } = theme[localStorage.getItem('theme')].main.body.key;
 
   return (
@@ -13,7 +13,7 @@ export const Key = ({ children, ...props }) => {
       bg={background}
       borderBottom={`5px solid ${borderColor}`}
       color={color}
-      font="inherit"
+      fontFamily="inherit"
       fontSize={['3xl', null, '2rem']}
       textTransform="uppercase"
       rounded="10px"
@@ -27,8 +27,6 @@ export const Key = ({ children, ...props }) => {
         background: 'intial'
       }}
       {...props}
-    >
-      {children}
-    </Button>
+    />
   );
 };
