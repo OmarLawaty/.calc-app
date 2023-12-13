@@ -2,10 +2,15 @@ import { Flex, Box, Text } from '@chakra-ui/react';
 
 import { Range } from './Range';
 
-export const ThemeController = ({ activeTheme, setActiveTheme }) => {
-  const handleChange = value => {
-    setActiveTheme(value);
-    localStorage.setItem('theme', value);
+interface ThemeControllerProps {
+  activeTheme: Theme;
+  setActiveTheme: React.Dispatch<React.SetStateAction<Theme>>;
+}
+
+export const ThemeController = ({ activeTheme, setActiveTheme }: ThemeControllerProps) => {
+  const onThemeChange = (theme: Theme) => {
+    setActiveTheme(theme);
+    localStorage.setItem('theme', theme);
   };
 
   return (
@@ -23,7 +28,7 @@ export const ThemeController = ({ activeTheme, setActiveTheme }) => {
           theme
         </Box>
 
-        <Range activeTheme={activeTheme} handleChange={handleChange} />
+        <Range activeTheme={activeTheme} onThemeChange={onThemeChange} />
       </Flex>
     </Flex>
   );

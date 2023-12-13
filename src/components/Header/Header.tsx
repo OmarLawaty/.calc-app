@@ -1,9 +1,14 @@
 import { Box, Heading } from '@chakra-ui/react';
 
-import { ThemeController } from './';
-import theme from '../../assets/theme.json';
+import { ThemeController } from '.';
+import { theme } from '../../assets/theme';
 
-export const Header = ({ activeTheme, setActiveTheme }) => (
+interface HeaderProps {
+  activeTheme: Theme;
+  setActiveTheme: React.Dispatch<React.SetStateAction<Theme>>;
+}
+
+export const Header = ({ activeTheme, setActiveTheme }: HeaderProps) => (
   <Box
     as="header"
     display="flex"

@@ -1,8 +1,14 @@
 import { Box } from '@chakra-ui/react';
-import theme from '../../assets/theme.json';
 
-export const Display = ({ currentDisplayValue: currentValue }) => {
-  const { color, background } = theme[localStorage.getItem('theme')].main.display;
+import { defaultTheme, theme } from '../../assets/theme';
+
+interface DisplayProps {
+  displayValue: string;
+}
+
+export const Display = ({ displayValue }: DisplayProps) => {
+  const savedTheme = (localStorage.getItem('theme') ?? defaultTheme) as Theme;
+  const { color, background } = theme[savedTheme].main.display;
 
   return (
     <Box
@@ -19,7 +25,7 @@ export const Display = ({ currentDisplayValue: currentValue }) => {
       fontSize={['3xl', null, '5xl']}
       transition="background 0.5s, color 0.5s"
     >
-      {currentValue}
+      {displayValue}
     </Box>
   );
 };

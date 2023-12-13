@@ -2,18 +2,21 @@ import { useEffect, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 
 import { Header, Display, Body } from './components';
-import theme from './assets/theme.json';
+import { theme } from './assets/theme';
+import { DEFAULT_DISPLAY_VALUE } from './constants';
 
 const App = () => {
-  const [activeTheme, setActiveTheme] = useState(1);
-  const [currentDisplayValue, setCurrentDisplayValue] = useState('0');
+  const [activeTheme, setActiveTheme] = useState<Theme>('1');
+  const [displayValue, setDisplayValue] = useState(DEFAULT_DISPLAY_VALUE);
 
   const { background } = theme[activeTheme].body;
 
   useEffect(() => {
-    const saved_theme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem('theme');
 
-    if (saved_theme) setActiveTheme(saved_theme);
+    if (!savedTheme) return;
+
+    setActiveTheme(savedTheme as Theme);
   }, []);
 
   return (
@@ -22,9 +25,9 @@ const App = () => {
         <Header setActiveTheme={setActiveTheme} activeTheme={activeTheme} />
 
         <Flex as="main" flexDir="column" gap="27px">
-          <Display currentDisplayValue={currentDisplayValue} />
+          <Display displayValue={displayValue} />
 
-          <Body currentDisplayValue={currentDisplayValue} setCurrentDisplayValue={setCurrentDisplayValue} />
+          <Body displayValue={displayValue} setDisplayValue={setDisplayValue} />
         </Flex>
       </Flex>
     </Flex>
