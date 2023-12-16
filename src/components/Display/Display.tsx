@@ -3,12 +3,25 @@ import { Box } from '@chakra-ui/react';
 import { defaultTheme, theme } from '../../assets/theme';
 
 interface DisplayProps {
-  displayValue: string;
+  displayValue: Display;
 }
 
 export const Display = ({ displayValue }: DisplayProps) => {
   const savedTheme = (localStorage.getItem('theme') ?? defaultTheme) as Theme;
   const { color, background } = theme[savedTheme].main.display;
+
+  const getDisplayValue = () => {
+    if (displayValue.firstNumber) {
+      if (displayValue.operator) return displayValue.firstNumber + displayValue.operator + displayValue.secondNumber;
+
+      return displayValue.firstNumber;
+    }
+
+    if (displayValue.operator && !displayValue.secondNumber)
+      return displayValue.firstNumber + displayValue.operator + '0';
+
+    return '0';
+  };
 
   return (
     <Box
@@ -25,7 +38,7 @@ export const Display = ({ displayValue }: DisplayProps) => {
       fontSize={['3xl', null, '5xl']}
       transition="background 0.5s, color 0.5s"
     >
-      {displayValue}
+      {getDisplayValue()}
     </Box>
   );
 };

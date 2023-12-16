@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Grid } from '@chakra-ui/react';
 
 import { Key } from './Key';
@@ -7,14 +7,14 @@ import { DEFAULT_DISPLAY_VALUE, calculatorKeys } from '../../constants';
 
 type CalculatorKey = keyof typeof calculatorKeys;
 
+type UpdateCurrentNumber = (perviousValue: string) => string;
+
 interface BodyProps {
-  displayValue: string;
-  setDisplayValue: React.Dispatch<React.SetStateAction<string>>;
+  displayValue: Display;
+  setDisplayValue: React.Dispatch<React.SetStateAction<Display>>;
 }
 
 export const Body = ({ displayValue, setDisplayValue }: BodyProps) => {
-  const [operator, setOperator] = useState<Operator | null>(null);
-
   const savedTheme = (localStorage.getItem('theme') ?? defaultTheme) as Theme;
   const { background, del, reset, equal } = theme[savedTheme].main.body;
 
@@ -38,65 +38,74 @@ export const Body = ({ displayValue, setDisplayValue }: BodyProps) => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [displayValue, operator]);
+  }, [displayValue, displayValue.operator]);
+
+  const UpdateActiveNumber = (updateCurrentNumber: UpdateCurrentNumber) => {
+    if (displayValue.operator)
+      return setDisplayValue({
+        ...displayValue,
+        secondNumber: updateCurrentNumber(displayValue.secondNumber.toString())
+      });
+
+    return setDisplayValue({ ...displayValue, firstNumber: updateCurrentNumber(displayValue.firstNumber.toString()) });
+  };
 
   const handleReset = () => {
     setDisplayValue(DEFAULT_DISPLAY_VALUE);
-    setOperator(null);
   };
 
   const handleDelete = () =>
-    setDisplayValue(prevValue => {
-      const valueAfterDeletion = prevValue.slice(0, -1);
-      if (!valueAfterDeletion) return DEFAULT_DISPLAY_VALUE;
+    setDisplayValue(previousValue => {
+      if (previousValue.secondNumber)
+        return { ...previousValue, secondNumber: previousValue.secondNumber.toString().slice(0, -1) };
+      if (previousValue.operator) return { ...previousValue, operator: null };
 
-      const isOperator = calculatorKeys.operators.includes(prevValue.slice(-1) as Operator);
-      if (isOperator) setOperator(null);
-
-      return valueAfterDeletion;
+      return { ...previousValue, firstNumber: previousValue.firstNumber.toString().slice(0, -1) };
     });
 
   const handleNumberInput = (num: string) =>
-    setDisplayValue(displayedValue => (displayedValue === '0' ? num : displayedValue + num));
+    setDisplayValue(displayedValue => {
+      if (!displayedValue.operator) return { ...displayedValue, firstNumber: displayedValue.firstNumber + num };
+      return { ...displayedValue, secondNumber: displayedValue.secondNumber + num };
+    });
 
   const handlePeriodInput = () => {
-    const endsInOperator = displayValue.slice(-1) === operator;
-    if (endsInOperator) return setDisplayValue(displayValue + '0.');
+    if (!displayValue.firstNumber || (displayValue.operator && !displayValue.secondNumber))
+      return UpdateActiveNumber(number => number + '0.');
 
-    const nums = displayValue.split(operator ?? '');
-    const lastNum = nums[nums.length - 1];
-    if (lastNum.includes('.')) return;
+    if (displayValue.firstNumber.includes('.') || displayValue.secondNumber.includes('.')) return;
 
-    setDisplayValue(displayValue + '.');
+    UpdateActiveNumber(number => number + '.');
   };
 
   const handleOperatorInput = (newOperator: Operator) => {
-    setOperator(newOperator);
-
-    const hasSecondNum = displayValue.split(operator ?? '').filter(Boolean).length === 2;
-    if (operator && hasSecondNum) {
-      setDisplayValue(calculate(displayValue, operator) + newOperator);
+    if (displayValue.firstNumber && displayValue.operator && displayValue.secondNumber) {
+      setDisplayValue(previousValue => ({
+        ...DEFAULT_DISPLAY_VALUE,
+        firstNumber: calculate(previousValue).toString(),
+        operator: newOperator
+      }));
       return;
     }
 
-    const endsInOperator = calculatorKeys.operators.includes(displayValue.slice(-1) as Operator);
-    const endsInPeriod = displayValue.slice(-1) === '.';
-    const shouldRemoveLastChar = endsInOperator || endsInPeriod;
-    if (shouldRemoveLastChar) {
-      setDisplayValue(displayValue.slice(0, -1) + newOperator);
+    setDisplayValue({ ...displayValue, operator: newOperator });
+
+    if (displayValue.operator && !displayValue.secondNumber)
+      return setDisplayValue({ ...displayValue, operator: newOperator });
+
+    const endsInPeriod = displayValue.firstNumber.slice(-1) === '.' || displayValue.secondNumber.slice(-1) === '.';
+    if (endsInPeriod) {
+      UpdateActiveNumber(number => number.slice(0, -1));
       return;
     }
 
-    setDisplayValue(displayValue + newOperator);
+    setDisplayValue({ ...displayValue, operator: newOperator });
   };
 
   const handleEqualInput = () => {
-    if (!operator || displayValue.split(operator).filter(Boolean).length !== 2) return;
+    if (!displayValue.operator || !displayValue.secondNumber) return;
 
-    setOperator(null);
-
-    const newDisplayValue = calculate(displayValue, operator).toString();
-    setDisplayValue(newDisplayValue);
+    setDisplayValue({ ...DEFAULT_DISPLAY_VALUE, firstNumber: calculate(displayValue).toString(), operator: null });
   };
 
   const onKeyClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -105,9 +114,8 @@ export const Body = ({ displayValue, setDisplayValue }: BodyProps) => {
     if (target.id === 'keyboard') return;
 
     // TODO: Refactor this
-    if (['math error', 'invalid operator'].includes(displayValue.toLowerCase())) {
-      setDisplayValue('0');
-      setOperator(null);
+    if (+displayValue.firstNumber === Infinity || isNaN(+displayValue.firstNumber)) {
+      setDisplayValue(DEFAULT_DISPLAY_VALUE);
     }
 
     switch (target.dataset.keyValue as CalculatorKey) {
@@ -222,31 +230,25 @@ const operatorsMap: Record<Operator, string> = {
   '/': 'divide'
 };
 
-const calculate = (calculation: string, operator: Operator) => {
-  let [firstNumber, secondNumber] = calculation.split(operator).filter(Boolean).map(Number);
-
-  console.log(calculation.split(operator).filter(Boolean).map(Number));
-
-  if (calculation[0] === '-' && operator === '-') {
-    firstNumber *= -1;
-  }
+const calculate = (calculation: Display) => {
+  const { firstNumber, operator, secondNumber } = calculation;
 
   switch (operator) {
     case '+':
-      return firstNumber + secondNumber;
+      return +firstNumber + +secondNumber;
 
     case '-':
-      return firstNumber - secondNumber;
+      return +firstNumber - +secondNumber;
 
     case '*':
-      return firstNumber * secondNumber;
+      return +firstNumber * +secondNumber;
 
     case '/':
-      if (firstNumber === 0 && secondNumber === 0) return 'Math Error!';
+      if (+firstNumber === 0 && +secondNumber === 0) return Infinity;
 
-      return firstNumber / secondNumber;
+      return +firstNumber / +secondNumber;
 
     default:
-      return 'Math Error!';
+      return NaN;
   }
 };

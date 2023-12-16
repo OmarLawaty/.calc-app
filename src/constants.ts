@@ -7,4 +7,4 @@ export const calculatorKeys = {
   reset: 'reset'
 } as const;
 
-export const DEFAULT_DISPLAY_VALUE = '0';
+export const DEFAULT_DISPLAY_VALUE = { firstNumber: '', operator: null, secondNumber: '' };

@@ -7,13 +7,12 @@ import { DEFAULT_DISPLAY_VALUE } from './constants';
 
 const App = () => {
   const [activeTheme, setActiveTheme] = useState<Theme>('1');
-  const [displayValue, setDisplayValue] = useState(DEFAULT_DISPLAY_VALUE);
+  const [displayValue, setDisplayValue] = useState<Display>(DEFAULT_DISPLAY_VALUE);
 
   const { background } = theme[activeTheme].body;
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
-
     if (!savedTheme) return;
 
     setActiveTheme(savedTheme as Theme);
