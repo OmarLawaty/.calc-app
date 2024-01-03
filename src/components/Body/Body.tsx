@@ -20,6 +20,10 @@ export const Body = ({ displayValue, setDisplayValue }: BodyProps) => {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      if (+displayValue.firstNumber === Infinity || isNaN(+displayValue.firstNumber)) {
+        setDisplayValue(DEFAULT_DISPLAY_VALUE);
+      }
+
       if (e.key === 'Backspace') handleDelete();
 
       if (e.key === '.') handlePeriodInput();
@@ -38,7 +42,7 @@ export const Body = ({ displayValue, setDisplayValue }: BodyProps) => {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [displayValue, displayValue.operator]);
+  }, [displayValue.firstNumber, displayValue.operator, displayValue.secondNumber]);
 
   const UpdateActiveNumber = (updateCurrentNumber: UpdateCurrentNumber) => {
     if (displayValue.operator)
@@ -73,7 +77,8 @@ export const Body = ({ displayValue, setDisplayValue }: BodyProps) => {
     if (!displayValue.firstNumber || (displayValue.operator && !displayValue.secondNumber))
       return UpdateActiveNumber(number => number + '0.');
 
-    if (displayValue.firstNumber.includes('.') || displayValue.secondNumber.includes('.')) return;
+    if ((displayValue.firstNumber.includes('.') && !displayValue.operator) || displayValue.secondNumber.includes('.'))
+      return;
 
     UpdateActiveNumber(number => number + '.');
   };
@@ -113,7 +118,6 @@ export const Body = ({ displayValue, setDisplayValue }: BodyProps) => {
 
     if (target.id === 'keyboard') return;
 
-    // TODO: Refactor this
     if (+displayValue.firstNumber === Infinity || isNaN(+displayValue.firstNumber)) {
       setDisplayValue(DEFAULT_DISPLAY_VALUE);
     }
